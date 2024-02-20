@@ -2,11 +2,16 @@ from tkinter import *
 import tkinter as tk
 from tkinter import filedialog
 import cv2
+import sys
 
 class VideoEditorApp:
     def __init__(self, master):
         self.master = master
         self.master.title("KR-Studio")
+
+        # Get project name from command-line argument
+        project_name = sys.argv[1] if len(sys.argv) > 1 else "Untitled"
+        self.master.title(f"KR-Studio - {project_name}")  # Set window title with project name
 
         self.video_frames = []
 
@@ -50,6 +55,7 @@ class VideoEditorApp:
 
 def main():
     root = tk.Tk()
+    root.geometry("720x720")
     app = VideoEditorApp(root)
     root.mainloop()
 

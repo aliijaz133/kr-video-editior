@@ -28,13 +28,14 @@ class Dashboard:
         video_format = self.video_format_var.get()
         if project_name:
             # Create project and open it
-            subprocess.run(["python", "video-editor.py", project_name, video_format])
+            subprocess.run(["python", "video-editor.py", project_name, video_format])  # Pass project name as command-line argument
             self.master.destroy()
         else:
             tk.messagebox.showerror("Error", "Please enter a project name.")
 
 def main():
     root = tk.Tk()
+    root.geometry("720x720")
     app = Dashboard(root)
     root.mainloop()
 
