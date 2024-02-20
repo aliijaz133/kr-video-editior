@@ -6,7 +6,7 @@ import cv2
 class VideoEditorApp:
     def __init__(self, master):
         self.master = master
-        self.master.title("Video Editor")
+        self.master.title("KR-Studio")
 
         self.video_frames = []
 
