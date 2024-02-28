@@ -11,7 +11,7 @@ class MainWindow:
         self.label = tk.Label(self.master, text="KR-Studio", font=("Helvetica", 16))
         self.label.pack(pady=20)
 
-        MainFrame = tk.Frame(self.master)  # Create the MainFrame first
+        MainFrame = tk.Frame(self.master)
         MainFrame.pack(padx=10, pady=10)
         MainFrame.columnconfigure(0, weight=1)
         MainFrame.rowconfigure(0, weight=1)
@@ -24,22 +24,18 @@ class MainWindow:
         self.spinner_canvas = tk.Canvas(master, width=200, height=200)
         self.spinner_canvas.pack(pady=10)
 
-        # Define the spinner animation from GIF
         self.spinner_image = Image.open("./asset/images/spinner.gif")
         self.spinner_frames = [ImageTk.PhotoImage(frame) for frame in ImageSequence.Iterator(self.spinner_image)]
         self.spinner_index = 0
         self.spinner_animation()
 
-        # Start countdown to switch to dashboard after 5 seconds
         self.start_countdown(5)
 
     def start_countdown(self, seconds):
         self.master.after(seconds * 1000, self.switch_to_dashboard)
 
     def switch_to_dashboard(self):
-        # Close the main window
         self.master.destroy()
-        # Open the dashboard
         subprocess.Popen(["python", "dashboard.py"])
 
     def spinner_animation(self):

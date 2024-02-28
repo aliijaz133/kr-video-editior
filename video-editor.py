@@ -338,7 +338,6 @@ class VideoEditorApp:
             self.video_canvas.create_image(0, 0, anchor=NW, image=frame)
             self.video_canvas.image = frame
 
-            # Call show_frame_with_title recursively
             self.master.after(30, self.show_frame_with_title)
         else:
             self.cap.release()
@@ -352,7 +351,6 @@ class VideoEditorApp:
       self.audio_settings_dialog = AudioSettingsDialog(self.master)
 
     def show_recent_projects(self):
-    # Assume you have a list of recent project names
         recent_projects = ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5"]
 
         recent_projects_window = tk.Toplevel(self.master)

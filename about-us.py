@@ -50,7 +50,6 @@ class About_Us:
         for feature in features:
             self.features_list.insert(tk.END, feature)
 
-        # Display current date and time
         self.datetime_label = tk.Label(
             self.master, text="Current Date and Time:", font=("Helvetica", 12)
         )
@@ -61,8 +60,8 @@ class About_Us:
         )
         self.current_datetime.pack()
 
-        self.update_datetime()  # Update time initially
-        self.master.after(1000, self.update_datetime)  # Update time every second
+        self.update_datetime()
+        self.master.after(1000, self.update_datetime)
 
     def update_datetime(self):
         now = datetime.now()
@@ -70,7 +69,7 @@ class About_Us:
         self.current_datetime.config(text=current_datetime)
         self.master.after(
             1000, self.update_datetime
-        )  # Schedule next update after 1 second
+        )
 
 
 def main():

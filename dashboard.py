@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import subprocess
 
 class Dashboard:
@@ -31,7 +31,7 @@ class Dashboard:
             subprocess.run(["python", "video-editor.py", project_name, video_format])  # Pass project name as command-line argument
             self.master.destroy()
         else:
-            tk.messagebox.showerror("Error", "Please enter a project name.")
+            messagebox.showerror("Error", "Please enter a project name.")
 
 def main():
     root = tk.Tk()
