@@ -1,5 +1,4 @@
 from tkinter import *
-import tkinter as tk
 from tkinter import filedialog, messagebox
 import sys
 import pickle
@@ -7,41 +6,44 @@ import cv2
 from PIL import Image, ImageTk
 import os
 
+
 class ExportDialog:
     def __init__(self, parent):
         self.parent = parent
-        self.dialog = tk.Toplevel(parent)
+        self.dialog = Toplevel(parent)
         self.dialog.title("Export Settings")
 
-        self.width_label = tk.Label(self.dialog, text="Width:")
-        self.width_label.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
-        self.width_entry = tk.Entry(self.dialog)
+        self.width_label = Label(self.dialog, text="Width:")
+        self.width_label.grid(row=0, column=0, padx=10, pady=5, sticky=W)
+        self.width_entry = Entry(self.dialog)
         self.width_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        self.height_label = tk.Label(self.dialog, text="Height:")
-        self.height_label.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
-        self.height_entry = tk.Entry(self.dialog)
+        self.height_label = Label(self.dialog, text="Height:")
+        self.height_label.grid(row=1, column=0, padx=10, pady=5, sticky=W)
+        self.height_entry = Entry(self.dialog)
         self.height_entry.grid(row=1, column=1, padx=10, pady=5)
 
-        self.frame_label = tk.Label(self.dialog, text="Frame Rate:")
-        self.frame_label.grid(row=2, column=0, padx=10, pady=5, sticky=tk.W)
-        self.frame_entry = tk.Entry(self.dialog)
+        self.frame_label = Label(self.dialog, text="Frame Rate:")
+        self.frame_label.grid(row=2, column=0, padx=10, pady=5, sticky=W)
+        self.frame_entry = Entry(self.dialog)
         self.frame_entry.grid(row=2, column=1, padx=10, pady=5)
 
-        self.format_label = tk.Label(self.dialog, text="Output Format:")
-        self.format_label.grid(row=3, column=0, padx=10, pady=5, sticky=tk.W)
-        self.format_var = tk.StringVar(self.dialog)
+        self.format_label = Label(self.dialog, text="Output Format:")
+        self.format_label.grid(row=3, column=0, padx=10, pady=5, sticky=W)
+        self.format_var = StringVar(self.dialog)
         self.format_var.set("mp4")
         self.format_options = ["mp4", "h264p", "fhd", "hd", "dv", "mpg", "mpeg"]
-        self.format_dropdown = tk.OptionMenu(self.dialog, self.format_var, *self.format_options)
-        self.format_dropdown.grid(row=3, column=1, padx=10, pady=5, sticky=tk.W)
+        self.format_dropdown = OptionMenu(
+            self.dialog, self.format_var, *self.format_options
+        )
+        self.format_dropdown.grid(row=3, column=1, padx=10, pady=5, sticky=W)
 
-        self.progress_label = tk.Label(self.dialog, text="Rendering Progress:")
-        self.progress_label.grid(row=4, column=0, padx=10, pady=5, sticky=tk.W)
-        self.progress_scale = tk.Scale(self.dialog, from_=0, to=100, orient=tk.HORIZONTAL)
-        self.progress_scale.grid(row=4, column=1, padx=10, pady=5, sticky=tk.W)
+        self.progress_label = Label(self.dialog, text="Rendering Progress:")
+        self.progress_label.grid(row=4, column=0, padx=10, pady=5, sticky=W)
+        self.progress_scale = Scale(self.dialog, from_=0, to=100, orient=HORIZONTAL)
+        self.progress_scale.grid(row=4, column=1, padx=10, pady=5, sticky=W)
 
-        self.export_button = tk.Button(self.dialog, text="Export", command=self.export)
+        self.export_button = Button(self.dialog, text="Export", command=self.export)
         self.export_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
 
     def export(self):
@@ -54,7 +56,11 @@ class ExportDialog:
         if export_path:
             # Perform export operation based on selected options
             # For demonstration, let's assume we're just showing a message box with export information
-            messagebox.showinfo("Export", f"Exporting video to: {export_path}\nWidth: {width}, Height: {height}, Frame Rate: {frame_rate}, Format: {output_format}")
+            messagebox.showinfo(
+                "Export",
+                f"Exporting video to: {export_path}\nWidth: {width}, Height: {height}, Frame Rate: {frame_rate}, Format: {output_format}",
+            )
+
 
 class VideoEditorApp:
     def __init__(self, master):
@@ -63,7 +69,9 @@ class VideoEditorApp:
 
         # Get project name from command-line argument
         project_name = sys.argv[1] if len(sys.argv) > 1 else "Untitled"
-        self.master.title(f"KR-Studio - {project_name}")  # Set window title with project name
+        self.master.title(
+            f"KR-Studio - {project_name}"
+        )  # Set window title with project name
 
         # Variables
         self.project_name = None
@@ -76,36 +84,76 @@ class VideoEditorApp:
         self.create_menus()
 
         # Video Preview Box
-        self.video_preview_box = tk.LabelFrame(self.master, text="Video Preview", padx=10, pady=10)
-        self.video_preview_box.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-        self.video_canvas = tk.Label(self.video_preview_box, width=720, height=720)
-        self.video_canvas.pack()
+        self.video_preview_box = LabelFrame(
+            self.master, text="Video Preview", padx=10, pady=10
+        )
+        self.video_preview_box.pack(padx=10, pady=10, fill=BOTH, expand=True)
+
+        # Scrollbars
+        self.x_scrollbar = Scrollbar(self.video_preview_box, orient=HORIZONTAL)
+        self.x_scrollbar.pack(side=BOTTOM, fill=X)
+        self.y_scrollbar = Scrollbar(self.video_preview_box)
+        self.y_scrollbar.pack(side=RIGHT, fill=Y)
+
+        self.video_canvas = Canvas(
+            self.video_preview_box,
+            xscrollcommand=self.x_scrollbar.set,
+            yscrollcommand=self.y_scrollbar.set,
+        )
+        self.video_canvas.pack(fill=BOTH, expand=True)
+
+        self.x_scrollbar.config(command=self.video_canvas.xview)
+        self.y_scrollbar.config(command=self.video_canvas.yview)
 
         # Time and Audio Controls
-        self.controls_frame = tk.Frame(self.master)
-        self.controls_frame.pack(padx=10, pady=10, fill=tk.X)
+        self.controls_frame = Frame(self.master)
+        self.controls_frame.pack(padx=10, pady=10, fill=X)
 
         # Time Control
-        self.time_label = tk.Label(self.controls_frame, text="Video Frame Time:")
-        self.time_label.pack(side=tk.LEFT, padx=(0, 10))
-        self.time_entry = tk.Entry(self.controls_frame)
-        self.time_entry.pack(side=tk.LEFT)
+        self.time_label = Label(self.controls_frame, text="Video Frame Time:")
+        self.time_label.pack(side=LEFT, padx=(0, 10))
+        self.time_entry = Entry(self.controls_frame)
+        self.time_entry.pack(side=LEFT)
 
         # Audio Control
-        self.audio_label = tk.Label(self.controls_frame, text="Audio:")
-        self.audio_label.pack(side=tk.LEFT, padx=(20, 10))
-        self.audio_entry = tk.Entry(self.controls_frame)
-        self.audio_entry.pack(side=tk.LEFT)
+        self.audio_label = Label(self.controls_frame, text="Audio:")
+        self.audio_label.pack(side=LEFT, padx=(20, 10))
+        self.audio_entry = Entry(self.controls_frame)
+        self.audio_entry.pack(side=LEFT)
 
         # Video Preview Controls
-        self.play_button = tk.Button(self.controls_frame, text="Play", command=self.play_pause)
-        self.play_button.pack(side=tk.LEFT, padx=(20, 10))
+        self.play_button = Button(
+            self.controls_frame, text="Play", command=self.play_pause
+        )
+        self.play_button.pack(side=LEFT, padx=(20, 10))
 
-        self.pause_button = tk.Button(self.controls_frame, text="Pause", command=self.play_pause)
-        self.pause_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.pause_button = Button(
+            self.controls_frame, text="Pause", command=self.play_pause
+        )
+        self.pause_button.pack(side=LEFT, padx=(0, 10))
 
-        self.jump_button = tk.Button(self.controls_frame, text="Jump 5 sec", command=self.jump_5_sec)
-        self.jump_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.jump_button = Button(
+            self.controls_frame, text="Jump 5 sec", command=self.jump_5_sec
+        )
+        self.jump_button.pack(side=LEFT, padx=(0, 10))
+
+        # Title Entry
+        self.title_label = Label(self.controls_frame, text="Title:")
+        self.title_label.pack(side=LEFT, padx=(20, 10))
+        self.title_entry = Entry(self.controls_frame)
+        self.title_entry.pack(side=LEFT)
+
+        # Text Entry
+        self.text_label = Label(self.controls_frame, text="Text:")
+        self.text_label.pack(side=LEFT, padx=(20, 10))
+        self.text_entry = Entry(self.controls_frame)
+        self.text_entry.pack(side=LEFT)
+
+        # Graphics Entry
+        self.graphics_label = Label(self.controls_frame, text="Graphics:")
+        self.graphics_label.pack(side=LEFT, padx=(20, 10))
+        self.graphics_entry = Entry(self.controls_frame)
+        self.graphics_entry.pack(side=LEFT)
 
         # Set window icon
         icon_path = "icon.ico"
@@ -114,11 +162,11 @@ class VideoEditorApp:
 
     def create_menus(self):
         # Menu Bar
-        menubar = tk.Menu(self.master)
+        menubar = Menu(self.master)
         self.master.config(menu=menubar)
 
         # File Menu
-        file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu = Menu(menubar, tearoff=0)
         file_menu.add_command(label="Open", command=self.open_video)
         file_menu.add_command(label="Open As", command=self.open_as)
         file_menu.add_separator()
@@ -130,11 +178,13 @@ class VideoEditorApp:
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.exit_app)
         file_menu.add_separator()
-        file_menu.add_command(label="Show Recent Projects", command=self.show_recent_projects)
+        file_menu.add_command(
+            label="Show Recent Projects", command=self.show_recent_projects
+        )
         menubar.add_cascade(label="File", menu=file_menu)
 
         # Edit Menu
-        edit_menu = tk.Menu(menubar, tearoff=0)
+        edit_menu = Menu(menubar, tearoff=0)
         edit_menu.add_command(label="Screen")
         edit_menu.add_command(label="Effects")
         edit_menu.add_command(label="Time Out")
@@ -144,17 +194,17 @@ class VideoEditorApp:
         menubar.add_cascade(label="Edit", menu=edit_menu)
 
         # Update Menu
-        update_menu = tk.Menu(menubar, tearoff=0)
+        update_menu = Menu(menubar, tearoff=0)
         update_menu.add_command(label="Check for Updates")
         menubar.add_cascade(label="Update", menu=update_menu)
 
         # About Us Menu
-        about_menu = tk.Menu(menubar, tearoff=0)
+        about_menu = Menu(menubar, tearoff=0)
         about_menu.add_command(label="About KR-Studio")
         menubar.add_cascade(label="About Us", menu=about_menu)
 
         # Help Menu
-        help_menu = tk.Menu(menubar, tearoff=0)
+        help_menu = Menu(menubar, tearoff=0)
         help_menu.add_command(label="Help Contents")
         help_menu.add_command(label="FAQ")
         help_menu.add_separator()
@@ -162,7 +212,7 @@ class VideoEditorApp:
         menubar.add_cascade(label="Help", menu=help_menu)
 
         # System Menu
-        system_menu = tk.Menu(menubar, tearoff=0)
+        system_menu = Menu(menubar, tearoff=0)
         system_menu.add_command(label="System Preferences")
         system_menu.add_command(label="System Information")
         menubar.add_cascade(label="System", menu=system_menu)
@@ -207,17 +257,55 @@ class VideoEditorApp:
         if self.video_path:
             self.cap = cv2.VideoCapture(self.video_path)
             self.playing = True
-            self.show_frame()
+            self.show_frame_with_title()
 
-    def show_frame(self):
+    def show_frame_with_title(self):
         ret, frame = self.cap.read()
         if ret and self.playing:
+            # Resize frame to 720x480
+            frame = cv2.resize(frame, (720, 480))
+
+            # Overlay title on frame
+            title = self.title_entry.get()
+            if title:
+                cv2.putText(
+                    frame,
+                    title,
+                    (50, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (255, 255, 255),
+                    2,
+                )
+
+            # Overlay text on frame
+            text = self.text_entry.get()
+            if text:
+                cv2.putText(
+                    frame,
+                    text,
+                    (50, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (255, 255, 255),
+                    2,
+                )
+
+            # Overlay graphics on frame
+            graphics = self.graphics_entry.get()
+            if graphics:
+                # Add code here to overlay graphics on frame
+                pass
+
+            # Convert frame to RGB and display
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = Image.fromarray(frame)
             frame = ImageTk.PhotoImage(frame)
-            self.video_canvas.config(image=frame)
+            self.video_canvas.create_image(0, 0, anchor=NW, image=frame)
             self.video_canvas.image = frame
-            self.master.after(30, self.show_frame)
+
+            # Call show_frame_with_title recursively
+            self.master.after(30, self.show_frame_with_title)
         else:
             self.cap.release()
 
@@ -239,11 +327,13 @@ class VideoEditorApp:
             jump_frame = current_frame + (5 * fps)
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, jump_frame)
 
+
 def main():
-    root = tk.Tk()
+    root = Tk()
     app = VideoEditorApp(root)
-    root.geometry("800x600")
+    root.geometry("1080x600")
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
