@@ -8,6 +8,7 @@ import os
 import tkinter as tk
 import webbrowser
 
+
 class ExportDialog:
     def __init__(self, parent):
         self.parent = parent
@@ -62,6 +63,7 @@ class ExportDialog:
                 f"Exporting video to: {export_path}\nWidth: {width}, Height: {height}, Frame Rate: {frame_rate}, Format: {output_format}",
             )
 
+
 class AudioSettingsDialog:
     def __init__(self, parent):
         self.parent = parent
@@ -76,12 +78,16 @@ class AudioSettingsDialog:
         self.volume_scale.grid(row=0, column=1, padx=10, pady=5)
 
         # Apply Button
-        self.apply_button = tk.Button(self.dialog, text="Apply", command=self.apply_settings)
+        self.apply_button = tk.Button(
+            self.dialog, text="Apply", command=self.apply_settings
+        )
         self.apply_button.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
     def apply_settings(self):
         volume = self.volume_scale.get()
         messagebox.showinfo("Audio Settings Applied", f"Volume set to {volume}%")
+
+
 class VideoEditorApp:
     def __init__(self, master):
         self.master = master
@@ -267,7 +273,9 @@ class VideoEditorApp:
     def save_as(self):
         project_data = {"project_name": "MyProject", "video_path": "/path/to/video"}
 
-        save_path = filedialog.asksaveasfilename(defaultextension=".kr", filetypes=[("KR Studio Files", "*.kr")])
+        save_path = filedialog.asksaveasfilename(
+            defaultextension=".kr", filetypes=[("KR Studio Files", "*.kr")]
+        )
 
         if save_path:
             with open(save_path, "wb") as file:
@@ -276,15 +284,17 @@ class VideoEditorApp:
         else:
             messagebox.showwarning("Save Cancelled", "No file selected for saving.")
 
-
     def import_video(self):
-        video_path = filedialog.askopenfilename(filetypes=[("Video Files", "*.mp4;*.avi;*.mkv")])
+        video_path = filedialog.askopenfilename(
+            filetypes=[("Video Files", "*.mp4;*.avi;*.mkv")]
+        )
 
         if video_path:
-            messagebox.showinfo("Import Successful", f"Video imported successfully: {video_path}")
+            messagebox.showinfo(
+                "Import Successful", f"Video imported successfully: {video_path}"
+            )
         else:
             messagebox.showwarning("Import Cancelled", "No video file selected.")
-
 
     def export_video(self):
         self.export_dialog = ExportDialog(self.master)
@@ -346,23 +356,32 @@ class VideoEditorApp:
         if self.cap:
             self.cap.release()
         self.master.destroy()
-    
+
     def open_audio_settings(self):
-      self.audio_settings_dialog = AudioSettingsDialog(self.master)
+        self.audio_settings_dialog = AudioSettingsDialog(self.master)
 
     def show_recent_projects(self):
-        recent_projects = ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5"]
+        recent_projects = [
+            "Project 1",
+            "Project 2",
+            "Project 3",
+            "Project 4",
+            "Project 5",
+        ]
 
         recent_projects_window = tk.Toplevel(self.master)
         recent_projects_window.title("Recent Projects")
-        label_title = tk.Label(recent_projects_window, text="Recent Projects", font=("Helvetica", 14, "bold"))
+        label_title = tk.Label(
+            recent_projects_window,
+            text="Recent Projects",
+            font=("Helvetica", 14, "bold"),
+        )
         label_title.pack(pady=10)
 
         listbox_projects = tk.Listbox(recent_projects_window, width=50, height=10)
         listbox_projects.pack(padx=20, pady=10)
         for project in recent_projects:
             listbox_projects.insert(tk.END, project)
-
 
     def play_pause(self):
         self.playing = not self.playing
@@ -373,14 +392,16 @@ class VideoEditorApp:
             fps = self.cap.get(cv2.CAP_PROP_FPS)
             jump_frame = current_frame + (5 * fps)
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, jump_frame)
+
     def open_help_contents(self):
-       webbrowser.open("https://example.com/help")
+        webbrowser.open("https://example.com/help")
 
     def open_faq(self):
         webbrowser.open("https://example.com/faq")
 
     def report_issue(self):
         webbrowser.open("https://example.com/report_issue")
+
 
 def main():
     root = Tk()

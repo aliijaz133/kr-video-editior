@@ -25,7 +25,10 @@ class MainWindow:
         self.spinner_canvas.pack(pady=10)
 
         self.spinner_image = Image.open("./asset/images/spinner.gif")
-        self.spinner_frames = [ImageTk.PhotoImage(frame) for frame in ImageSequence.Iterator(self.spinner_image)]
+        self.spinner_frames = [
+            ImageTk.PhotoImage(frame)
+            for frame in ImageSequence.Iterator(self.spinner_image)
+        ]
         self.spinner_index = 0
         self.spinner_animation()
 
@@ -40,7 +43,9 @@ class MainWindow:
 
     def spinner_animation(self):
         self.spinner_canvas.delete("all")
-        self.spinner_canvas.create_image(100, 100, image=self.spinner_frames[self.spinner_index])
+        self.spinner_canvas.create_image(
+            100, 100, image=self.spinner_frames[self.spinner_index]
+        )
         self.spinner_index += 1
         if self.spinner_index >= len(self.spinner_frames):
             self.spinner_index = 0

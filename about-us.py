@@ -67,9 +67,7 @@ class About_Us:
         now = datetime.now()
         current_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
         self.current_datetime.config(text=current_datetime)
-        self.master.after(
-            1000, self.update_datetime
-        )
+        self.master.after(1000, self.update_datetime)
 
 
 def main():
