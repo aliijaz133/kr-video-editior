@@ -88,6 +88,25 @@ class AudioSettingsDialog:
         messagebox.showinfo("Audio Settings Applied", f"Volume set to {volume}%")
 
 
+class TimelineView(Frame):
+    def __init__(self, master, length=1000):
+        super().__init__(master)
+        self.length = length
+        self.pack(fill=X)
+
+        self.canvas = Canvas(self, width=self.length, height=20)
+        self.canvas.pack()
+
+        self.create_timeline()
+
+    def create_timeline(self):
+        self.canvas.create_line(
+            0, 0, self.length, 0, fill="black", width=2
+        )  # Main timeline
+
+        # Add markers or other elements as needed
+
+
 class VideoEditorApp:
     def __init__(self, master):
         self.master = master
@@ -180,6 +199,11 @@ class VideoEditorApp:
         self.graphics_label.pack(side=LEFT, padx=(20, 10))
         self.graphics_entry = Entry(self.controls_frame)
         self.graphics_entry.pack(side=LEFT)
+
+        # Timeline Frame
+        self.timeline_view = TimelineView(
+            self.master, length=1000
+        )  # Adjust length as needed
 
         # Set window icon
         icon_path = "icon.ico"
@@ -306,51 +330,57 @@ class VideoEditorApp:
             self.show_frame_with_title()
 
     def show_frame_with_title(self):
-        ret, frame = self.cap.read()
-        if ret and self.playing:
-            frame = cv2.resize(frame, (720, 480))
+        if self.playing:
+            ret, frame = self.cap.read()
+            if ret:
+                frame = cv2.resize(frame, (720, 480))
 
-            title = self.title_entry.get()
-            if title:
-                cv2.putText(
-                    frame,
-                    title,
-                    (50, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (255, 255, 255),
-                    2,
-                )
+                title = self.title_entry.get()
+                if title:
+                    cv2.putText(
+                        frame,
+                        title,
+                        (50, 50),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (255, 255, 255),
+                        2,
+                    )
 
-            # Overlay text on frame
-            text = self.text_entry.get()
-            if text:
-                cv2.putText(
-                    frame,
-                    text,
-                    (50, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (255, 255, 255),
-                    2,
-                )
+                # Overlay text on frame
+                text = self.text_entry.get()
+                if text:
+                    cv2.putText(
+                        frame,
+                        text,
+                        (50, 100),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (255, 255, 255),
+                        2,
+                    )
 
-            # Overlay graphics on frame
-            graphics = self.graphics_entry.get()
-            if graphics:
-                # Add code here to overlay graphics on frame
-                pass
+                # Overlay graphics on frame
+                graphics = self.graphics_entry.get()
+                if graphics:
+                    # Add code here to overlay graphics on frame
+                    pass
 
-            # Convert frame to RGB and display
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = Image.fromarray(frame)
-            frame = ImageTk.PhotoImage(frame)
-            self.video_canvas.create_image(0, 0, anchor=NW, image=frame)
-            self.video_canvas.image = frame
+                # Convert frame to RGB and display
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = Image.fromarray(frame)
+                frame = ImageTk.PhotoImage(frame)
+                self.video_canvas.create_image(0, 0, anchor=NW, image=frame)
+                self.video_canvas.image = frame
 
-            self.master.after(30, self.show_frame_with_title)
+                self.master.after(30, self.show_frame_with_title)
+            else:
+                self.cap.release()
+                self.playing = False  # Set playing to False when video ends
         else:
-            self.cap.release()
+            self.master.after(
+                30, self.show_frame_with_title
+            )  # Continue displaying the current frame
 
     def exit_app(self):
         if self.cap:
